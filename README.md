@@ -1,2 +1,3 @@
 # nutanix_ansible
-Deploy VMs on Nuntanix via Ansible
+
+Deploying Multi-VM on NUTANIX with Ansible
