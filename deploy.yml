@@ -1,0 +1,44 @@
+---
+- name: Provisionamento de VMs no Nutanix Prism Central
+  hosts: localhost
+  gather_facts: false
+  collections:
+    - nutanix.ncp
+  vars_files:
+    - vms.yml
+  module_defaults:
+    group/nutanix.ncp.ntnx:
+      nutanix_host: "{{ pc_host }}"
+      nutanix_username: "{{ pc_user }}"
+      nutanix_password: "{{ pc_pass }}"
+      validate_certs: false
+
+  tasks:
+    - name: Criar instâncias
+      nutanix.ncp.ntnx_vms:
+        state: present
+        cluster:
+          name: "{{ item.0.cluster }}"     
+        name: "{{ item.0.prefix }}-{{ item.1 }}"
+        cores_per_vcpu: "{{ item.0.cores }}"
+        vcpus: "{{ item.0.vcpu }}"
+        memory_gb: "{{ item.0.mem }}"
+        networks:
+          - is_connected: true
+            subnet:
+              name: "{{ item.0.vlan }}"
+        disks:
+          - type: DISK
+            size_gb: "{{ item.0.disk }}"
+            bus: SCSI
+            clone_image:
+              name: "{{ item.0.image }}"
+        boot_config:
+          boot_type: UEFI
+          boot_order:
+            - DISK
+        guest_customization:
+          type: "cloud_init"
+          script_path: "./cloud_init.yml"
+          is_overridable: true
+      loop: "{{ vms_def | subelements('indices') }}"
