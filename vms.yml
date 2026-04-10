@@ -1,0 +1,16 @@
+---
+# Definição e quantidade dos recursos das VMs
+vms_def:
+  - prefix: "vm-web-"
+    cluster: "CLUSTER NAME HERE"
+    cores: 1
+    vcpu: 2
+    mem: 4
+    disk: 10
+    image: "ubuntu-2404-cloudimg"
+    vlan: "VLAN HERE"
+    indices: [1,2] # Criará vm-web-1 e vm-web-2
+  # - prefix: "vm-db"
+  #   vcpu: 4
+  #   ram_gb: 8
+  #   indices: [1]    # Criará vm-db-1
