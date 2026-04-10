@@ -1,0 +1,27 @@
+---
+#cloud-config
+users:
+  - default
+  - name: user
+    groups: sudo
+    shell: /bin/bash
+    sudo: ['ALL=(ALL) NOPASSWD:ALL']
+    passwd: $6$rounds=4 ...
+    ssh_authorized_keys:
+      - ssh-ed25519 AAAAC3NzaC1lZ ...
+write_files:
+  - path: /etc/netplan/50-cloud-init.yaml
+    content: |
+      network:
+        version: 2
+        ethernets:
+          ens3:
+            dhcp4: true
+            dhcp6: false
+            nameservers:
+              search: [domain.local]
+              addresses: [10.0.0.10]
+runcmd:
+  - chmod 600 /etc/netplan/*
+  - netplan apply 
+  - timedatectl set-timezone America/Cuiaba
